@@ -3,9 +3,31 @@ from pydantic import BaseModel
 from typing import Union, List
 from transformers import MarianMTModel, MarianTokenizer
 import logging
+import os
 
-app = FastAPI()
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
+
+app = FastAPI(
+    title="MarianMT Translation API",
+    description="Self-hosted translation service using MarianMT models",
+    version="1.0.0"
+)
+
+# Health check endpoint for Render
+@app.get("/")
+@app.get("/health")
+def health_check():
+    """Health check endpoint for Render"""
+    return {
+        "status": "healthy",
+        "service": "MarianMT Translation API",
+        "loaded_models": list(models_cache.keys())
+    }
 
 # Model mapping for language pairs
 MODEL_MAP = {

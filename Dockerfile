@@ -23,6 +23,11 @@ RUN pip install --no-cache-dir \
 
 COPY app.py .
 
+# Render uses PORT environment variable
+# Default to 10000 for local development
+ENV PORT=10000
+
 EXPOSE 10000
 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "10000"]
+# Use PORT from environment (Render requirement)
+CMD uvicorn app:app --host 0.0.0.0 --port ${PORT:-10000}
